@@ -1,0 +1,24 @@
+---
+import Base from '../layouts/Base.astro';
+import Navbar from '../components/Navbar.astro';
+import Hero from '../components/Hero.astro';
+import Ticker from '../components/Ticker.astro';
+import Firms from '../components/Firms.astro';
+import HowItWorks from '../components/HowItWorks.astro';
+import Footer from '../components/Footer.astro';
+import { firms } from '../data/firms';
+---
+
+<Base
+  title="J Trades: The only code you need to remember is JEW"
+  description={`Discounts at ${firms.length} futures and perps prop firms with one code: JEW.`}
+>
+  <Navbar />
+  <main>
+    <Ticker />
+    <Hero />
+    <Firms />
+    <HowItWorks />
+  </main>
+  <Footer />
+</Base>

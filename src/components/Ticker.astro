@@ -1,0 +1,51 @@
+---
+import { firms, CODE } from '../data/firms';
+// Rendered twice so the -50% translate loops seamlessly.
+const loop = [...firms, ...firms];
+---
+
+<div class="ticker" aria-label="Partner firms">
+  <div class="ticker__track">
+    {loop.map((f, i) => (
+      <span class="ticker__item" aria-hidden={i >= firms.length ? 'true' : undefined}>
+        <span class="ticker__sym">{f.symbol}</span>
+        <span class="ticker__name">{f.name}</span>
+        <span class="up">▲ {CODE}</span>
+      </span>
+    ))}
+  </div>
+</div>
+
+<style>
+  .ticker {
+    position: relative;
+    overflow: hidden;
+    padding: 0.6rem 0;
+    background: color-mix(in srgb, var(--primary) 12%, var(--bg));
+    border-block: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  }
+  .ticker__track {
+    display: flex;
+    width: max-content;
+    animation: ticker 40s linear infinite;
+  }
+  .ticker:hover .ticker__track { animation-play-state: paused; }
+  .ticker__item {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.6rem;
+    padding: 0 2.25rem;
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    white-space: nowrap;
+    border-right: 1px solid var(--line);
+  }
+  .ticker__sym { font-weight: 700; color: var(--text); }
+  .ticker__name { color: var(--text-muted); }
+  @keyframes ticker { to { transform: translateX(-50%); } }
+  @media (prefers-reduced-motion: reduce) {
+    .ticker__track { animation: none; flex-wrap: wrap; width: auto; justify-content: center; }
+    .ticker__item[aria-hidden='true'] { display: none; }
+  }
+</style>

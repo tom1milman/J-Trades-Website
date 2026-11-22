@@ -1,0 +1,141 @@
+---
+import fs from 'node:fs';
+import path from 'node:path';
+import { CODE, type Firm } from '../data/firms';
+
+interface Props {
+  firm: Firm;
+}
+const { firm } = Astro.props;
+
+// Show the logo only if the file actually exists in public/logos/.
+const hasLogo = !!firm.logo && fs.existsSync(path.join(process.cwd(), 'public', 'logos', firm.logo));
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+---
+
+<article class="card" data-tilt>
+  <div class="card__glare" aria-hidden="true"></div>
+  <header class="card__head">
+    <span class="card__sym">{firm.name}</span>
+    <span class="up">▲ {firm.symbol}</span>
+  </header>
+
+  <div class="card__brand">
+    {hasLogo ? (
+      <img src={`${base}logos/${firm.logo}`} alt={firm.name} loading="lazy" />
+    ) : (
+      <h3 class="card__name">{firm.name}</h3>
+    )}
+  </div>
+
+  <div class="card__code">
+    <span class="card__label">USE CODE</span>
+    <button class="card__copy" type="button" data-copy={CODE} aria-label={`Copy code ${CODE}`}>
+      {CODE}
+      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+    </button>
+  </div>
+
+  <a class="btn btn--primary card__cta" href={firm.url} target="_blank" rel="sponsored noopener noreferrer">
+    Claim discount <span aria-hidden="true">→</span>
+  </a>
+</article>
+
+<style>
+  .card {
+    --rx: 0deg;
+    --ry: 0deg;
+    --mx: 50%;
+    --my: 50%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    padding: 1.25rem;
+    border-radius: 14px;
+    background: linear-gradient(160deg, color-mix(in srgb, var(--surface) 85%, transparent), color-mix(in srgb, var(--surface) 45%, transparent));
+    border: 1px solid var(--line);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transform: perspective(900px) rotateX(var(--rx)) rotateY(var(--ry));
+    transform-style: preserve-3d;
+    transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.3s, box-shadow 0.3s;
+    overflow: hidden;
+  }
+  .card.is-tilting { transition: transform 0.08s linear, border-color 0.3s, box-shadow 0.3s; }
+  .card:hover {
+    border-color: color-mix(in srgb, var(--accent) 70%, transparent);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 25%, transparent), 0 18px 50px -12px color-mix(in srgb, var(--primary) 80%, transparent);
+  }
+  .card__glare {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(420px circle at var(--mx) var(--my), color-mix(in srgb, var(--accent) 22%, transparent), transparent 45%);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .card:hover .card__glare { opacity: 1; }
+
+  .card__head {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px dashed var(--line);
+  }
+  .card__sym { font-weight: 700; color: var(--text); }
+
+  .card__brand {
+    min-height: 72px;
+    display: grid;
+    place-items: center;
+    text-align: center;
+  }
+  .card__brand img { max-height: 56px; max-width: 80%; object-fit: contain; }
+  .card__name {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.45rem;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    background: linear-gradient(180deg, #fff, #c9d6ff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .card__code {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.5rem 0.5rem 0.5rem 0.75rem;
+    border-radius: 10px;
+    background: color-mix(in srgb, var(--bg) 70%, transparent);
+    border: 1px solid var(--line);
+  }
+  .card__label { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.12em; color: var(--text-muted); }
+  .card__copy {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-family: var(--font-mono);
+    font-weight: 800;
+    font-size: 1rem;
+    letter-spacing: 0.1em;
+    color: var(--text);
+    background: color-mix(in srgb, var(--primary) 35%, transparent);
+    border: 1px dashed color-mix(in srgb, var(--accent) 60%, transparent);
+    border-radius: 8px;
+    padding: 0.35rem 0.65rem;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .card__copy:hover { background: color-mix(in srgb, var(--primary) 65%, transparent); }
+  .card__copy svg { color: var(--accent); }
+  .card__cta { justify-content: center; margin-top: auto; }
+</style>

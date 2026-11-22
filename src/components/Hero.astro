@@ -1,0 +1,172 @@
+---
+import StarOfDavid from './StarOfDavid.astro';
+import { CODE, firms } from '../data/firms';
+---
+
+<section class="hero" id="top">
+  <div class="hero__grid" aria-hidden="true"></div>
+  <StarOfDavid class="hero__star" strokeWidth={0.6} draw />
+  <svg class="hero__chart" viewBox="0 0 1200 200" preserveAspectRatio="none" aria-hidden="true">
+    <polyline
+      pathLength="1"
+      points="0,170 60,160 110,172 170,140 220,150 280,120 330,132 390,104 440,118 500,96 560,108 610,80 670,92 720,70 780,84 840,58 900,66 950,44 1010,52 1070,30 1130,38 1200,14"
+    />
+  </svg>
+
+  <div class="container hero__content">
+    <p class="eyebrow reveal">Shalom, traders!</p>
+    <h1 class="hero__title reveal">
+      The only code you need to remember:
+    </h1>
+
+    <div class="codebox reveal">
+      <span class="codebox__code">{CODE}</span>
+      <button class="btn btn--primary codebox__btn" type="button" data-copy={CODE}>
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+        Copy
+      </button>
+    </div>
+
+    <a class="hero__scroll reveal" href="#firms">See the firms ↓</a>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    overflow: hidden;
+    padding: clamp(4.5rem, 12vw, 6.5rem) 0 clamp(4rem, 9vw, 6rem);
+    text-align: center;
+    isolation: isolate;
+  }
+  .hero__grid {
+    position: absolute;
+    inset: 0;
+    z-index: -3;
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, #000 30%, transparent 80%);
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    z-index: -2;
+    inset: -20% 10% auto;
+    height: 80%;
+    background: radial-gradient(closest-side, color-mix(in srgb, var(--primary) 45%, transparent), transparent);
+    filter: blur(40px);
+  }
+  /* Flag-stripe divider between the hero and the firms section */
+  .hero::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 11px;
+    background: linear-gradient(var(--primary) 0 3px, transparent 3px 8px, var(--primary) 8px 11px);
+    mask-image: linear-gradient(90deg, transparent, #000 15%, #000 85%, transparent);
+    filter: drop-shadow(0 0 6px color-mix(in srgb, var(--accent) 60%, transparent));
+  }
+  .hero :global(.hero__star) {
+    position: absolute;
+    z-index: -1;
+    left: 50%;
+    top: 50%;
+    width: min(440px, 92vw);
+    translate: -50% -50%;
+    color: var(--accent);
+    opacity: 0.22;
+    filter: drop-shadow(0 0 10px var(--accent));
+  }
+  .hero__chart {
+    position: absolute;
+    z-index: -1;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 38%;
+    opacity: 0.35;
+  }
+  .hero__chart polyline {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 2;
+    vector-effect: non-scaling-stroke;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: chart-draw 3s 0.4s ease-out forwards;
+  }
+  @keyframes chart-draw { to { stroke-dashoffset: 0; } }
+
+  .hero__content { display: flex; flex-direction: column; align-items: center; }
+  .eyebrow {
+    font-family: var(--font-hebrew);
+    font-size: 1.25rem;
+    font-style: italic;
+    color: var(--accent);
+    margin: 0 0 1rem;
+  }
+  .hero__title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(2rem, 6vw, 4.25rem);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    max-width: 15ch;
+    margin: 0 0 2.25rem;
+    text-wrap: balance;
+  }
+  .hero__code-word {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 1.35em;
+    letter-spacing: 0.04em;
+    color: var(--text);
+    text-shadow: 0 0 24px var(--glow), 0 0 60px var(--glow);
+    margin-top: 0.15em;
+  }
+
+  .codebox {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 0.9rem 0.9rem 0.9rem 1.875rem;
+    border-radius: 24px;
+    background: color-mix(in srgb, var(--surface) 70%, transparent);
+    border: 1px dashed color-mix(in srgb, var(--accent) 70%, transparent);
+    box-shadow: 0 0 40px color-mix(in srgb, var(--primary) 50%, transparent), inset 0 0 20px color-mix(in srgb, var(--primary) 30%, transparent);
+    backdrop-filter: blur(8px);
+  }
+  .codebox__label { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.15em; color: var(--text-muted); }
+  .codebox__code { font-family: var(--font-mono); font-weight: 800; font-size: 2.625rem; letter-spacing: 0.12em; }
+  .codebox__btn { font-size: 1.1rem; padding: 0.6rem 1rem; border-radius: 12px; gap: 0.5rem; }
+  .codebox__btn svg { width: 20px; height: 20px; }
+
+  .hero__ticker {
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin: 1.75rem 0 0;
+  }
+  .hero__ticker .dot { color: var(--accent); }
+  .hero__scroll {
+    margin-top: 2.5rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.2s;
+  }
+  .hero__scroll:hover { color: var(--text); }
+
+  @media (max-width: 480px) {
+    .codebox { flex-wrap: wrap; justify-content: center; padding: 1.5rem; }
+    .codebox__label { width: 100%; text-align: center; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero__chart polyline { animation: none; stroke-dashoffset: 0; }
+  }
+</style>

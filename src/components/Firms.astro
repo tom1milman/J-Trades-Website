@@ -1,0 +1,29 @@
+---
+import FirmCard from './FirmCard.astro';
+import { firms, CODE } from '../data/firms';
+---
+
+<section class="section" id="firms">
+  <div class="container">
+    <div class="section__head reveal">
+      <p class="kicker">// PARTNER FIRMS</p>
+      <h2 class="section__title">Pick your firm. Use code <span class="hl">{CODE}</span>.</h2>
+      <p class="section__sub">Every firm below takes the same code at checkout. One word, {firms.length} firms, zero excuses.</p>
+    </div>
+    <div class="grid">
+      {firms.map((firm) => <div class="reveal grid__item"><FirmCard firm={firm} /></div>)}
+    </div>
+  </div>
+</section>
+
+<style>
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+  /* 1 → 2 → 4 columns so 8 cards always fill complete rows */
+  @media (min-width: 560px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1024px) { .grid { grid-template-columns: repeat(4, 1fr); } }
+  .grid__item { display: grid; }
+</style>

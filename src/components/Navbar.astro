@@ -1,0 +1,112 @@
+---
+import { CODE } from '../data/firms';
+import { DISCORD_URL } from '../data/site';
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+---
+
+<header class="nav">
+  <div class="container nav__inner">
+    <a href="#top" class="brand" aria-label="J Trades home">
+      <span class="brand__glow" aria-hidden="true"><span class="brand__logo" style={`--mark: url(${base}jtrades-mark.png)`}></span></span>
+      <span class="brand__name">J TRADES</span>
+    </a>
+    <nav class="nav__links" aria-label="Sections">
+      <a href="#firms">Firms</a>
+      <a href="#how">How it works</a>
+    </nav>
+    <button class="pill" type="button" data-copy={CODE} aria-label={`Copy code ${CODE}`}>
+      {CODE}
+      <svg class="pill__icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+    </button>
+    <a class="discord" href={DISCORD_URL} target="_blank" rel="noopener noreferrer" aria-label="Join our Discord">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.865-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.291a.074.074 0 0 1 .078-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+      <span class="discord__label">Join Discord</span>
+    </a>
+  </div>
+</header>
+
+<style>
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: color-mix(in srgb, var(--bg) 72%, transparent);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav__inner {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    height: 64px;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: var(--text);
+    text-decoration: none;
+    margin-right: auto;
+  }
+  .brand__glow { display: inline-flex; filter: drop-shadow(0 0 6px var(--glow)); }
+  /* The mark's top ~28% is the arrow tip; the letters fill the lower part.
+     Shift it up so the letters (not the whole image) line up with the text. */
+  .brand__logo {
+    height: 30px;
+    aspect-ratio: 484 / 525;
+    translate: 0 -14%;
+    background: var(--accent);
+    -webkit-mask: var(--mark) center / contain no-repeat;
+    mask: var(--mark) center / contain no-repeat;
+  }
+  .brand__name { font-family: var(--font-display); font-weight: 700; letter-spacing: 0.08em; font-size: 1.15rem; line-height: 1; }
+  .nav__links { display: flex; gap: 1.5rem; }
+  .nav__links a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.92rem;
+    transition: color 0.2s;
+  }
+  .nav__links a:hover { color: var(--text); }
+  .pill {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--text);
+    background: color-mix(in srgb, var(--primary) 35%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent) 55%, transparent);
+    border-radius: 999px;
+    padding: 0.4rem 0.85rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.15rem;
+    transition: box-shadow 0.2s, background 0.2s;
+  }
+  .pill:hover { background: color-mix(in srgb, var(--primary) 60%, transparent); box-shadow: 0 0 18px var(--glow); }
+  .pill__dollar { color: var(--accent); }
+  .pill__icon { color: var(--accent); margin-left: 0.4rem; flex-shrink: 0; }
+  .discord {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.85rem;
+    border-radius: 999px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #fff;
+    text-decoration: none;
+    background: #5865f2;
+    border: 1px solid color-mix(in srgb, #fff 18%, #5865f2);
+    transition: box-shadow 0.2s, background 0.2s;
+  }
+  .discord:hover { background: #4752c4; box-shadow: 0 0 18px rgba(88, 101, 242, 0.6); }
+  .discord svg { flex-shrink: 0; }
+  @media (max-width: 560px) {
+    .nav__links { display: none; }
+    .nav__inner { gap: 0.6rem; }
+    .discord { padding: 0.45rem 0.6rem; }
+    .discord__label { display: none; }
+  }
+</style>

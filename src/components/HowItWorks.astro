@@ -1,0 +1,66 @@
+---
+import { CODE } from '../data/firms';
+const steps = [
+  { n: '01', title: 'Pick a firm', body: 'Browse the partner firms above and choose the one that fits how you trade.' },
+  { n: '02', title: `Enter code ${CODE}`, body: `At checkout, type ${CODE} in the promo or coupon field. Yes, really. That's the whole trick.` },
+  { n: '03', title: 'Trade & get funded', body: 'Pass the evaluation, get your funded account, and try not to revenge-trade.' },
+];
+---
+
+<section class="section" id="how">
+  <div class="container">
+    <div class="section__head reveal">
+      <p class="kicker">// HOW IT WORKS</p>
+      <h2 class="section__title">Three steps. Even a futures trader can do it.</h2>
+    </div>
+    <ol class="steps">
+      {steps.map((s) => (
+        <li class="step reveal">
+          <span class="step__n">{s.n}</span>
+          <h3 class="step__title">{s.title}</h3>
+          <p class="step__body">{s.body}</p>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.25rem;
+    counter-reset: none;
+  }
+  .step {
+    position: relative;
+    padding: 1.5rem;
+    border-radius: 14px;
+    border: 1px solid var(--line);
+    background: color-mix(in srgb, var(--surface) 55%, transparent);
+  }
+  .step::before {
+    content: '';
+    position: absolute;
+    left: 1.5rem;
+    right: 1.5rem;
+    top: -1px;
+    height: 2px;
+    background: linear-gradient(90deg, var(--primary), var(--accent), transparent);
+  }
+  .step__n {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: var(--accent);
+  }
+  .step__title {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    margin: 0.6rem 0 0.5rem;
+  }
+  .step__body { margin: 0; color: var(--text-muted); line-height: 1.6; }
+</style>
