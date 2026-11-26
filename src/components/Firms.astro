@@ -1,23 +1,37 @@
 ---
 import FirmCard from './FirmCard.astro';
+import FirmCardSmall from './FirmCardSmall.astro';
 import { firms } from '../data/firms';
+
+const bigFirms = firms.filter((f) => f.size === 'big');
+const smallFirms = firms.filter((f) => f.size === 'small');
 ---
 
 <section class="links" id="firms" aria-label="Partner firms">
   <div class="container links__inner">
-    <div class="grid" id="firms-grid">
-      {firms.map((firm) => <div class="reveal grid__item"><FirmCard firm={firm} /></div>)}
+    <div class="grid" data-shuffle>
+      {bigFirms.map((firm) => <div class="reveal grid__item"><FirmCard firm={firm} /></div>)}
     </div>
+
+    {smallFirms.length > 0 && (
+      <div class="more">
+        <p class="more__title reveal"><span class="up">//</span> More firms</p>
+        <div class="grid grid--small" data-shuffle>
+          {smallFirms.map((firm) => <div class="reveal grid__item"><FirmCardSmall firm={firm} /></div>)}
+        </div>
+      </div>
+    )}
+
     <script is:inline>
       (() => {
-        const grid = document.getElementById('firms-grid');
-        if (!grid) return;
-        const items = Array.from(grid.children);
-        for (let i = items.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [items[i], items[j]] = [items[j], items[i]];
-        }
-        grid.append(...items);
+        document.querySelectorAll('#firms [data-shuffle]').forEach((grid) => {
+          const items = Array.from(grid.children);
+          for (let i = items.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [items[i], items[j]] = [items[j], items[i]];
+          }
+          grid.append(...items);
+        });
       })();
     </script>
   </div>
@@ -32,9 +46,20 @@ import { firms } from '../data/firms';
   .links__inner { max-width: 960px; }
   .grid {
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 1.5rem;
   }
-  @media (min-width: 640px) { .grid { grid-template-columns: repeat(2, 1fr); } }
-  .grid__item { display: grid; }
+  @media (min-width: 640px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .grid__item { display: grid; min-width: 0; }
+
+  .more { margin-top: clamp(2.25rem, 5vw, 3rem); }
+  .more__title {
+    margin: 0 0 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .grid--small { gap: 0.75rem; }
 </style>

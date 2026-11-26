@@ -1,0 +1,133 @@
+---
+import fs from 'node:fs';
+import path from 'node:path';
+import { CODE, type Firm } from '../data/firms';
+
+interface Props {
+  firm: Firm;
+}
+const { firm } = Astro.props;
+
+// Show the logo only if the file actually exists in public/logos/.
+const hasLogo = !!firm.logo && fs.existsSync(path.join(process.cwd(), 'public', 'logos', firm.logo));
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+---
+
+<article class="mini">
+  <div class="mini__logo">
+    {hasLogo ? (
+      <img src={`${base}logos/${firm.logo}`} alt="" loading="lazy" />
+    ) : (
+      <span class="mini__initial" aria-hidden="true">{firm.symbol.slice(0, 2)}</span>
+    )}
+  </div>
+
+  <div class="mini__text">
+    <h3 class="mini__name">{firm.name}</h3>
+    <span class="mini__sym up">▲ {firm.symbol}</span>
+  </div>
+
+  <button class="mini__copy" type="button" data-copy={CODE} aria-label={`Copy code ${CODE}`}>
+    {CODE}
+    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+  </button>
+
+  <a class="mini__go" href={firm.url} target="_blank" rel="sponsored noopener noreferrer" aria-label={`Claim discount at ${firm.name}`}>
+    <span aria-hidden="true">→</span>
+  </a>
+</article>
+
+<style>
+  .mini {
+    position: relative;
+    min-width: 0;
+    container-type: inline-size;
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 0.7rem 0.7rem 0.7rem 0.8rem;
+    border-radius: 14px;
+    background:
+      linear-gradient(135deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.02) 50%, rgba(76, 141, 255, 0.05) 100%),
+      rgba(13, 24, 56, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 12px 28px -18px rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(2px) saturate(140%);
+    -webkit-backdrop-filter: blur(2px) saturate(140%);
+    transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+  }
+  .mini:hover {
+    border-color: color-mix(in srgb, var(--accent) 60%, transparent);
+    transform: translateY(-2px);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 14px 34px -14px color-mix(in srgb, var(--primary) 80%, transparent);
+  }
+
+  .mini__logo {
+    flex: 0 0 auto;
+    width: 76px;
+    height: 44px;
+    display: grid;
+    place-items: center;
+    padding: 6px 8px;
+    border-radius: 10px;
+    background: color-mix(in srgb, var(--bg) 40%, transparent);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  .mini__logo img { max-width: 100%; max-height: 100%; object-fit: contain; }
+  .mini__initial { font-family: var(--font-mono); font-weight: 800; color: var(--accent); letter-spacing: 0.05em; }
+
+  .mini__text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.1rem; }
+  .mini__name {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1rem;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .mini__sym { font-size: 0.72rem; letter-spacing: 0.08em; }
+
+  .mini__copy {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-family: var(--font-mono);
+    font-weight: 800;
+    font-size: 0.9rem;
+    letter-spacing: 0.1em;
+    color: var(--text);
+    background: color-mix(in srgb, var(--primary) 30%, transparent);
+    border: 1px dashed color-mix(in srgb, var(--accent) 55%, transparent);
+    border-radius: 8px;
+    padding: 0.4rem 0.6rem;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .mini__copy:hover { background: color-mix(in srgb, var(--primary) 60%, transparent); }
+  .mini__copy svg { color: var(--accent); }
+
+  .mini__go {
+    flex: 0 0 auto;
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #fff;
+    text-decoration: none;
+    background: var(--primary);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    transition: background 0.2s, transform 0.2s;
+  }
+  .mini__go:hover { background: color-mix(in srgb, var(--primary) 70%, var(--accent)); transform: translateX(2px); }
+  /* Narrow cards (phones): smaller logo tile and tighter spacing so everything fits */
+  @container (max-width: 340px) {
+    .mini__logo { width: 56px; height: 38px; padding: 5px 6px; }
+    .mini__copy svg { display: none; }
+  }
+</style>
