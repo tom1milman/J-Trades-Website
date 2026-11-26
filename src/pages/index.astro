@@ -1,10 +1,8 @@
 ---
 import Base from '../layouts/Base.astro';
 import Navbar from '../components/Navbar.astro';
-import Hero from '../components/Hero.astro';
 import Ticker from '../components/Ticker.astro';
 import Firms from '../components/Firms.astro';
-import HowItWorks from '../components/HowItWorks.astro';
 import Footer from '../components/Footer.astro';
 import { firms } from '../data/firms';
 ---
@@ -14,11 +12,9 @@ import { firms } from '../data/firms';
   description={`Discounts at ${firms.length} futures and perps prop firms with one code: JEW.`}
 >
   <Navbar />
-  <main>
+  <main id="top">
     <Ticker />
-    <Hero />
     <Firms />
-    <HowItWorks />
   </main>
   <Footer />
 </Base>

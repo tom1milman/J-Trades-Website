@@ -10,10 +10,6 @@ const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
       <span class="brand__glow" aria-hidden="true"><span class="brand__logo" style={`--mark: url(${base}jtrades-mark.png)`}></span></span>
       <span class="brand__name">J TRADES</span>
     </a>
-    <nav class="nav__links" aria-label="Sections">
-      <a href="#firms">Firms</a>
-      <a href="#how">How it works</a>
-    </nav>
     <button class="pill" type="button" data-copy={CODE} aria-label={`Copy code ${CODE}`}>
       {CODE}
       <svg class="pill__icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
@@ -61,14 +57,6 @@ const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
     mask: var(--mark) center / contain no-repeat;
   }
   .brand__name { font-family: var(--font-display); font-weight: 700; letter-spacing: 0.08em; font-size: 1.15rem; line-height: 1; }
-  .nav__links { display: flex; gap: 1.5rem; }
-  .nav__links a {
-    color: var(--text-muted);
-    text-decoration: none;
-    font-size: 0.92rem;
-    transition: color 0.2s;
-  }
-  .nav__links a:hover { color: var(--text); }
   .pill {
     font-family: var(--font-mono);
     font-weight: 700;
@@ -104,7 +92,6 @@ const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
   .discord:hover { background: #4752c4; box-shadow: 0 0 18px rgba(88, 101, 242, 0.6); }
   .discord svg { flex-shrink: 0; }
   @media (max-width: 560px) {
-    .nav__links { display: none; }
     .nav__inner { gap: 0.6rem; }
     .discord { padding: 0.45rem 0.6rem; }
     .discord__label { display: none; }

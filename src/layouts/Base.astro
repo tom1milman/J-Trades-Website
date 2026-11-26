@@ -4,6 +4,7 @@ import '@fontsource-variable/space-grotesk';
 import '@fontsource-variable/jetbrains-mono';
 import '@fontsource/frank-ruhl-libre/500.css';
 import '../styles/global.css';
+import Starfield from '../components/Starfield.astro';
 
 interface Props {
   title: string;
@@ -19,7 +20,7 @@ const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="color-scheme" content="dark" />
-    <meta name="theme-color" content="#050B1F" />
+    <meta name="theme-color" content="#020308" />
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta property="og:title" content={title} />
@@ -29,6 +30,7 @@ const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
     <script is:inline>document.documentElement.classList.add('js');</script>
   </head>
   <body>
+    <Starfield />
     <slot />
     <div class="toast" role="status" aria-live="polite"></div>
     <script>

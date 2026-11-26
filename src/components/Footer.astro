@@ -6,39 +6,22 @@ const year = new Date().getFullYear();
 <footer class="footer">
   <div class="footer__stripe" aria-hidden="true"></div>
   <div class="container footer__inner">
-    <div class="footer__brand">
-      <StarOfDavid class="footer__star" strokeWidth={7} />
-      <span>J TRADES</span>
-    </div>
-
     <div class="footer__legal">
       <p>
         <strong>Affiliate disclosure.</strong> Links on this site are affiliate links. If you sign up through them or use
-        code JEW, we may earn a commission at no extra cost to you. This is how the site pays for itself.
+        code JEW, we may earn a commission at no extra cost to you.
       </p>
       <p>
-        <strong>Risk disclaimer.</strong> Trading futures and crypto perpetuals involves substantial risk of loss and is
-        not suitable for everyone. Past performance is not indicative of future results. Nothing on this site is
-        financial, investment or trading advice. Only trade with money you can afford to lose.
-      </p>
-      <p>
-        <strong>Independence.</strong> The firms listed are independent companies. They do not own, operate or endorse
-        this site, and all trademarks belong to their respective owners. Discounts and terms are set by each firm and
-        may change at any time.
+        <strong>Risk disclaimer.</strong> Nothing here is a financial advice. 
       </p>
     </div>
-
-    <p class="footer__copy">© {year} J Trades</p>
   </div>
 </footer>
 
 <style>
   .footer { margin-top: clamp(3rem, 8vw, 6rem); }
   .footer__stripe {
-    height: 5px;
-    background: var(--primary);
-    box-shadow: 0 10px 0 var(--bg), 0 15px 0 var(--primary);
-    margin-bottom: 15px;
+    border-top: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
   }
   .footer__inner { padding-block: 2.5rem 2rem; display: grid; gap: 1.75rem; }
   .footer__brand {
