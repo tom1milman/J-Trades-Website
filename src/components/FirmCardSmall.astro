@@ -8,15 +8,19 @@ interface Props {
 }
 const { firm } = Astro.props;
 
-// Show the logo only if the file actually exists in public/logos/.
-const hasLogo = !!firm.logo && fs.existsSync(path.join(process.cwd(), 'public', 'logos', firm.logo));
+// Prefer the square logo, then the regular logo; only use a file that actually exists in public/logos/.
+const exists = (file?: string) => !!file && fs.existsSync(path.join(process.cwd(), 'public', 'logos', file));
+const isSquare = exists(firm.squareLogo);
+const logoFile = isSquare ? firm.squareLogo : exists(firm.logo) ? firm.logo : undefined;
+// Offset each card's float so the logos don't bob in sync.
+const floatDelay = `${-([...firm.name].reduce((n, c) => n + c.charCodeAt(0), 0) % 30) / 10}s`;
 const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
 ---
 
 <article class="mini">
-  <div class="mini__logo">
-    {hasLogo ? (
-      <img src={`${base}logos/${firm.logo}`} alt="" loading="lazy" />
+  <div class:list={['mini__logo', { 'mini__logo--square': isSquare }]} style={isSquare ? `--float-delay: ${floatDelay}` : undefined}>
+    {logoFile ? (
+      <img src={`${base}logos/${encodeURIComponent(logoFile)}`} alt="" loading="lazy" />
     ) : (
       <span class="mini__initial" aria-hidden="true">{firm.symbol.slice(0, 2)}</span>
     )}
@@ -74,6 +78,23 @@ const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
     border: 1px solid rgba(255, 255, 255, 0.08);
   }
   .mini__logo img { max-width: 100%; max-height: 100%; object-fit: contain; }
+  .mini__logo--square {
+    width: 44px;
+    padding: 2px;
+    background: none;
+    border: none;
+  }
+  .mini__logo--square img {
+    animation: mini-float 3s ease-in-out infinite;
+    animation-delay: var(--float-delay, 0s);
+  }
+  @keyframes mini-float {
+    0%, 100% { transform: translateY(2px); }
+    50% { transform: translateY(-3px); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .mini__logo--square img { animation: none; }
+  }
   .mini__initial { font-family: var(--font-mono); font-weight: 800; color: var(--accent); letter-spacing: 0.05em; }
 
   .mini__text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.1rem; }
@@ -128,6 +149,7 @@ const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
   /* Narrow cards (phones): smaller logo tile and tighter spacing so everything fits */
   @container (max-width: 340px) {
     .mini__logo { width: 56px; height: 38px; padding: 5px 6px; }
+    .mini__logo--square { width: 38px; padding: 2px; }
     .mini__copy svg { display: none; }
   }
 </style>

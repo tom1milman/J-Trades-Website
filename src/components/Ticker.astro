@@ -1,14 +1,30 @@
 ---
+import fs from 'node:fs';
+import path from 'node:path';
 import { firms, CODE } from '../data/firms';
+
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+// Use the square logo only if the file actually exists in public/logos/.
+const items = firms.map((f) => ({
+  ...f,
+  squareSrc:
+    f.squareLogo && fs.existsSync(path.join(process.cwd(), 'public', 'logos', f.squareLogo))
+      ? `${base}logos/${encodeURIComponent(f.squareLogo)}`
+      : null,
+}));
 // Rendered twice so the -50% translate loops seamlessly.
-const loop = [...firms, ...firms];
+const loop = [...items, ...items];
 ---
 
 <div class="ticker" aria-label="Partner firms">
   <div class="ticker__track">
     {loop.map((f, i) => (
       <span class="ticker__item" aria-hidden={i >= firms.length ? 'true' : undefined}>
-        <span class="ticker__sym">{f.symbol}</span>
+        {f.squareSrc ? (
+          <img class="ticker__logo" src={f.squareSrc} alt="" />
+        ) : (
+          <span class="ticker__sym">{f.symbol}</span>
+        )}
         <span class="ticker__name">{f.name}</span>
         <span class="up">▲ {CODE}</span>
       </span>
@@ -33,7 +49,7 @@ const loop = [...firms, ...firms];
   .ticker:hover .ticker__track { animation-play-state: paused; }
   .ticker__item {
     display: inline-flex;
-    align-items: baseline;
+    align-items: center;
     gap: 0.6rem;
     padding: 0 2.25rem;
     font-family: var(--font-mono);
@@ -42,6 +58,13 @@ const loop = [...firms, ...firms];
     border-right: 1px solid var(--line);
   }
   .ticker__sym { font-weight: 700; color: var(--text); }
+  .ticker__logo {
+    width: 1.6rem;
+    height: 1.6rem;
+    object-fit: contain;
+    border-radius: 0.3rem;
+    flex: none;
+  }
   .ticker__name { color: var(--text-muted); }
   @keyframes ticker { to { transform: translateX(-50%); } }
   @media (prefers-reduced-motion: reduce) {
