@@ -1,5 +1,4 @@
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
 /* ---------- Copy code ---------- */
 
@@ -71,13 +70,22 @@ document.addEventListener('click', async (e) => {
 
 const MAX_TILT = 7; // degrees
 
-if (finePointer && !reducedMotion) {
+// Decide per event rather than via (hover: hover) and (pointer: fine): that query only
+// describes the *primary* pointer, so touchscreen laptops report "coarse" even when a
+// mouse is in use, and the tilt never turned on.
+const isMouse = (e: PointerEvent) => e.pointerType === 'mouse' || e.pointerType === 'pen';
+
+if (!reducedMotion) {
   document.querySelectorAll<HTMLElement>('[data-tilt]').forEach((card) => {
     let frame = 0;
 
-    card.addEventListener('pointerenter', () => card.classList.add('is-tilting'));
+    card.addEventListener('pointerenter', (e) => {
+      if (isMouse(e)) card.classList.add('is-tilting');
+    });
 
     card.addEventListener('pointermove', (e) => {
+      if (!isMouse(e)) return;
+      card.classList.add('is-tilting');
       cancelAnimationFrame(frame);
       frame = requestAnimationFrame(() => {
         const r = card.getBoundingClientRect();
