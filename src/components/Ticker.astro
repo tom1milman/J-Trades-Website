@@ -73,35 +73,59 @@ const loop = [...items, ...items];
 </style>
 
 <script>
-  // Ease the ticker to a stop on hover and back up to speed on leave,
-  // by tweening the CSS animation's playbackRate instead of pausing it.
+  // The track scrolls via a CSS animation by default. When JS runs, we take over
+  // and move it ourselves each frame, so hovering can ease the speed down to 0
+  // and back up without relying on browser-specific playbackRate behavior.
+  const DURATION_S = 40; // time for one full loop at normal speed
   const STOP_MS = 700;
   const START_MS = 900;
   const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
   const easeInOutCubic = (t: number) =>
     t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 
-  document.querySelectorAll<HTMLElement>('.ticker').forEach((ticker) => {
-    const track = ticker.querySelector<HTMLElement>('.ticker__track');
-    const anim = track?.getAnimations()[0];
-    if (!anim) return; // reduced motion, or no WAAPI support
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    let frame = 0;
-    const tweenTo = (target: number, duration: number, ease: (t: number) => number) => {
-      cancelAnimationFrame(frame);
-      const from = anim.playbackRate;
-      const start = performance.now();
-      // Scale duration by how far we have to go, so reversing mid-tween feels natural.
-      const span = Math.max(Math.abs(target - from), 0.001) * duration;
-      const step = (now: number) => {
-        const t = Math.min((now - start) / span, 1);
-        anim.playbackRate = from + (target - from) * ease(t);
-        if (t < 1) frame = requestAnimationFrame(step);
+  if (!reduced) {
+    document.querySelectorAll<HTMLElement>('.ticker').forEach((ticker) => {
+      const track = ticker.querySelector<HTMLElement>('.ticker__track');
+      if (!track) return;
+
+      // Start from wherever the CSS animation currently is, then disable it.
+      const loopWidth = () => track.scrollWidth / 2;
+      let offset = Math.abs(new DOMMatrix(getComputedStyle(track).transform).m41) || 0;
+      track.style.animation = 'none';
+
+      let rate = 1; // 1 = normal speed, 0 = stopped
+      let tween: { from: number; to: number; start: number; span: number; ease: (t: number) => number } | null = null;
+      let last = performance.now();
+
+      const frame = (now: number) => {
+        const dt = Math.min(now - last, 100); // avoid jumps after a background tab
+        last = now;
+
+        if (tween) {
+          const t = Math.min((now - tween.start) / tween.span, 1);
+          rate = tween.from + (tween.to - tween.from) * tween.ease(t);
+          if (t >= 1) tween = null;
+        }
+
+        const w = loopWidth();
+        if (w > 0) {
+          offset = (offset + (w / (DURATION_S * 1000)) * dt * rate) % w;
+          track.style.transform = `translate3d(${-offset}px, 0, 0)`;
+        }
+        requestAnimationFrame(frame);
       };
-      frame = requestAnimationFrame(step);
-    };
+      requestAnimationFrame(frame);
 
-    ticker.addEventListener('mouseenter', () => tweenTo(0, STOP_MS, easeOutCubic));
-    ticker.addEventListener('mouseleave', () => tweenTo(1, START_MS, easeInOutCubic));
-  });
+      const tweenTo = (to: number, duration: number, ease: (t: number) => number) => {
+        // Scale duration by how far we have to go, so reversing mid-tween feels natural.
+        const span = Math.max(Math.abs(to - rate), 0.001) * duration;
+        tween = { from: rate, to, start: performance.now(), span, ease };
+      };
+
+      ticker.addEventListener('mouseenter', () => tweenTo(0, STOP_MS, easeOutCubic));
+      ticker.addEventListener('mouseleave', () => tweenTo(1, START_MS, easeInOutCubic));
+    });
+  }
 </script>
